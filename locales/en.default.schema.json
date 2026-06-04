@@ -233,7 +233,8 @@
     "video_autoplay": "Videos will be muted by default",
     "video_external": "Use a YouTube or Vimeo URL",
     "pills_usage": "Used for applied filters, discount codes, and search suggestions",
-    "media_type_info": "Features are populated from your menu links"
+    "media_type_info": "Features are populated from your menu links",
+    "rating_stars_info": "0 = no rating, 50 = 5 stars. Each step of 5 = half a star."
   },
   "names": {
     "column": "Column",
@@ -434,7 +435,9 @@
     "video_section": "Video",
     "view_all_button": "View all",
     "pills": "Pills",
-    "comparison_slider": "Comparison slider"
+    "comparison_slider": "Comparison slider",
+    "offer_bundle": "Offer bundle",
+    "offer_bundle_product": "Product"
   },
   "options": {
     "above_carousel": "Above carousel",
@@ -1174,7 +1177,26 @@
     "cs_slider_inner_color": "Slider inner color",
     "text_on_images": "Text on images",
     "x_position": "Horizontal position",
-    "y_position": "Vertical position"
+    "y_position": "Vertical position",
+    "promo_label_1_text": "Promo label 1",
+    "promo_label_1_color": "Promo label 1 color",
+    "promo_label_2_text": "Promo label 2",
+    "promo_label_2_color": "Promo label 2 color",
+    "rating_stars": "Rating",
+    "rating_count": "Rating count",
+    "benefits": "Benefits",
+    "bottom_benefits": "Bottom benefits",
+    "shipping_text": "Shipping text",
+    "guarantee_text": "Guarantee text",
+    "accent_color": "Accent color",
+    "custom_title": "Custom title",
+    "title_prefix": "Title prefix",
+    "title_prefix_color": "Title prefix color",
+    "flavor_label": "Flavor",
+    "count_label": "Count",
+    "is_free": "Free product",
+    "custom_icon": "Custom icon",
+    "description": "Description"
   },
   "text_defaults": {
     "accordion_heading": "Accordion heading",

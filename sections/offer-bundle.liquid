@@ -1,0 +1,938 @@
+{% liquid
+  assign accent_color = section.settings.accent_color | default: '#680040'
+  assign hero_image = section.settings.hero_image
+  assign rating_stars = section.settings.rating_stars
+  assign rating_count = section.settings.rating_count
+  assign title = section.settings.title
+  assign benefits = section.settings.benefits
+  assign bottom_benefits = section.settings.bottom_benefits
+  assign button_text = section.settings.button_text
+  assign shipping_text = section.settings.shipping_text
+  assign guarantee_text = section.settings.guarantee_text
+  assign promo_label_1_text = section.settings.promo_label_1_text
+  assign promo_label_1_color = section.settings.promo_label_1_color
+  assign promo_label_2_text = section.settings.promo_label_2_text
+  assign promo_label_2_color = section.settings.promo_label_2_color
+
+  comment
+    Compute total_price (all products) and paid_price (non-free products only)
+  endcomment
+  assign total_price = 0
+  assign paid_price = 0
+  assign cart_items_json = ''
+
+  for block in section.blocks
+    if block.settings.product != blank
+      assign variant = block.settings.product.selected_or_first_available_variant
+      if variant != blank
+        assign total_price = total_price | plus: variant.price
+        unless block.settings.is_free
+          assign paid_price = paid_price | plus: variant.price
+        endunless
+
+        assign item_json = '{"id":' | append: variant.id | append: ',"quantity":1}'
+        if cart_items_json != ''
+          assign cart_items_json = cart_items_json | append: ',' | append: item_json
+        else
+          assign cart_items_json = item_json
+        endif
+      endif
+    endif
+  endfor
+
+  assign cart_items_array = '[' | append: cart_items_json | append: ']'
+
+  comment
+    Compute full and half stars from rating_stars (0-50 scale representing 0.0-5.0)
+  endcomment
+  assign full_stars = rating_stars | divided_by: 10
+  assign star_remainder = rating_stars | modulo: 10
+  assign has_half_star = false
+  if star_remainder >= 5
+    assign has_half_star = true
+  endif
+
+  comment
+    Collect thumbnail images from block products
+  endcomment
+  assign thumbnail_count = 0
+%}
+
+<section
+  id="section-{{ section.id }}"
+  class="offer-bundle"
+  style="
+    --offer-bundle-accent: {{ accent_color }};
+    --offer-bundle-padding-top: {{ section.settings.padding_top }}px;
+    --offer-bundle-padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="offer-bundle__container">
+    {%- comment -%} Left column: Hero image + promo labels + thumbnails {%- endcomment -%}
+    <div class="offer-bundle__image-column">
+      <div class="offer-bundle__image-wrapper">
+        {% if hero_image != blank %}
+          {%- liquid
+            assign sizes_val = '(min-width: 960px) 50vw, 100vw'
+          -%}
+          {{
+            hero_image
+            | image_url: width: hero_image.width
+            | image_tag:
+              sizes: sizes_val,
+              widths: '375,550,750,1100,1500',
+              loading: 'lazy',
+              class: 'offer-bundle__hero-image',
+              alt: hero_image.alt
+          }}
+        {% endif %}
+
+        {% if promo_label_1_text != blank or promo_label_2_text != blank %}
+          <div class="offer-bundle__promo-labels">
+            {% if promo_label_1_text != blank %}
+              <span class="offer-bundle__promo-badge" style="background-color: {{ promo_label_1_color }};">
+                {{ promo_label_1_text | escape }}
+              </span>
+            {% endif %}
+            {% if promo_label_2_text != blank %}
+              <span class="offer-bundle__promo-badge" style="background-color: {{ promo_label_2_color }};">
+                {{ promo_label_2_text | escape }}
+              </span>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+
+      {%- comment -%} Thumbnail gallery from block products {%- endcomment -%}
+      <div class="offer-bundle__thumbnails">
+        {% for block in section.blocks %}
+          {% liquid
+            assign thumb_image = blank
+            if block.settings.product != blank and block.settings.product.featured_image != blank
+              assign thumb_image = block.settings.product.featured_image
+            elsif block.settings.custom_icon != blank
+              assign thumb_image = block.settings.custom_icon
+            endif
+          %}
+          {% if thumb_image != blank %}
+            <div class="offer-bundle__thumbnail{% if forloop.first %} offer-bundle__thumbnail--active{% endif %}">
+              <img
+                src="{{ thumb_image | image_url: width: 96 }}"
+                alt="{{ thumb_image.alt | default: block.settings.custom_title | escape }}"
+                width="48"
+                height="48"
+                loading="lazy"
+              >
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    {%- comment -%} Right column: Product details + items + CTA {%- endcomment -%}
+    <div class="offer-bundle__content-column">
+      {%- comment -%} Product Details {%- endcomment -%}
+      <div class="offer-bundle__details">
+        {%- comment -%} Rating {%- endcomment -%}
+        {% if rating_stars > 0 %}
+          <div class="offer-bundle__rating">
+            {% for i in (1..5) %}
+              {% if i <= full_stars %}
+                <img src="{{ 'star-5.svg' | asset_url }}" alt="" width="16" height="16" class="offer-bundle__star-icon">
+              {% elsif has_half_star and i == full_stars | plus: 1 %}
+                <img src="{{ 'starhalf-2.svg' | asset_url }}" alt="" width="16" height="16" class="offer-bundle__star-icon">
+              {% endif %}
+            {% endfor %}
+            {% if rating_count != blank %}
+              <span class="offer-bundle__rating-count">{{ rating_count | escape }}</span>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {%- comment -%} Title {%- endcomment -%}
+        {% if title != blank %}
+          <div class="offer-bundle__title">
+            {{ title }}
+          </div>
+        {% endif %}
+
+        {%- comment -%} Price {%- endcomment -%}
+        <div class="offer-bundle__price">
+          <span class="offer-bundle__price-current">{{ paid_price | money }}</span>
+          {% if total_price > paid_price %}
+            <span class="offer-bundle__price-compare">{{ total_price | money }}</span>
+          {% endif %}
+        </div>
+
+        {%- comment -%} Benefits list {%- endcomment -%}
+        {% if benefits != blank %}
+          {% assign benefit_lines = benefits | split: '
+' %}
+          <ul class="offer-bundle__benefits">
+            {% for line in benefit_lines %}
+              {% assign trimmed_line = line | strip %}
+              {% if trimmed_line != '' %}
+                <li class="offer-bundle__benefit">
+                  <img src="{{ 'checkcircle.svg' | asset_url }}" alt="" width="16" height="16" class="offer-bundle__benefit-icon">
+                  <span>{{ trimmed_line | escape }}</span>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      {%- comment -%} Product items {%- endcomment -%}
+      <div class="offer-bundle__items">
+        {% for block in section.blocks %}
+          {% render 'offer-bundle-item', block: block, accent_color: accent_color %}
+        {% endfor %}
+      </div>
+
+      {%- comment -%} Bottom benefits bar {%- endcomment -%}
+      {% if bottom_benefits != blank %}
+        {% assign bottom_benefit_lines = bottom_benefits | split: '
+' %}
+        <div class="offer-bundle__bottom-benefits">
+          {% for line in bottom_benefit_lines %}
+            {% assign trimmed_line = line | strip %}
+            {% if trimmed_line != '' %}
+              <span class="offer-bundle__bottom-benefit">
+                <img src="{{ 'check.svg' | asset_url }}" alt="" width="10" height="10">
+                <span>{{ trimmed_line | escape }}</span>
+              </span>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {%- comment -%} CTA Button {%- endcomment -%}
+      <offer-bundle-form data-items="{{ cart_items_array | escape }}" id="offer-bundle-{{ section.id }}">
+        <button
+          type="button"
+          class="offer-bundle__cta-button"
+          data-offer-bundle-button
+        >
+          <span data-button-text data-loading-text="{{ 'offer_bundle.adding' | t }}" data-added-text="{{ 'offer_bundle.added' | t }}">{{ button_text | escape }}</span>
+          <span class="offer-bundle__cta-price">
+            {% if total_price > paid_price %}
+              <span class="offer-bundle__cta-price-compare">{{ total_price | money }}</span>
+            {% endif %}
+            <span class="offer-bundle__cta-price-current">{{ paid_price | money }}</span>
+          </span>
+        </button>
+      </offer-bundle-form>
+
+      {%- comment -%} Shipping info {%- endcomment -%}
+      {% if shipping_text != blank or guarantee_text != blank %}
+        <div class="offer-bundle__shipping-info">
+          {% if shipping_text != blank %}
+            <span class="offer-bundle__shipping-item">
+              <img src="{{ 'truck.svg' | asset_url }}" alt="" width="18" height="18">
+              <span>{{ shipping_text | escape }}</span>
+            </span>
+          {% endif %}
+          {% if guarantee_text != blank %}
+            <span class="offer-bundle__shipping-item">
+              <img src="{{ 'shieldcheck.svg' | asset_url }}" alt="" width="18" height="18">
+              <span>{{ guarantee_text | escape }}</span>
+            </span>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<script src="{{ 'offer-bundle.js' | asset_url }}" defer="defer"></script>
+
+{% stylesheet %}
+.offer-bundle {
+  padding-block-start: var(--offer-bundle-padding-top, 0px);
+  padding-block-end: var(--offer-bundle-padding-bottom, 0px);
+  padding-inline: var(--page-margin, 16px);
+}
+
+.offer-bundle__container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 90rem;
+  margin-inline: auto;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* ---- Image Column ---- */
+.offer-bundle__image-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-block-end: 24px;
+  background-color: color-mix(in srgb, var(--offer-bundle-accent) 5%, #FFFFFF);
+}
+
+.offer-bundle__image-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.offer-bundle__hero-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.offer-bundle__promo-labels {
+  position: absolute;
+  top: 16px;
+  inset-inline-start: 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  z-index: 1;
+}
+
+.offer-bundle__promo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 14px;
+  font-size: 12px;
+  line-height: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #FFFEF5;
+  letter-spacing: 0.02em;
+}
+
+.offer-bundle__thumbnails {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.offer-bundle__thumbnail {
+  width: 72px;
+  height: 72px;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FFFFFF;
+  border: 1px solid #FFFFFF;
+}
+
+.offer-bundle__thumbnail--active {
+  border: 1.5px solid var(--offer-bundle-accent);
+}
+
+.offer-bundle__thumbnail img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.offer-bundle__thumbnail--active img {
+  width: 64px;
+  height: 64px;
+}
+
+/* ---- Content Column ---- */
+.offer-bundle__content-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  padding: 0 64px;
+  background-color: color-mix(in srgb, var(--offer-bundle-accent) 5%, #FFFFFF);
+}
+
+/* ---- Product Details ---- */
+.offer-bundle__details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.offer-bundle__rating {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+}
+
+.offer-bundle__star-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.offer-bundle__rating-count {
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--offer-bundle-accent);
+  margin-inline-start: 2px;
+}
+
+.offer-bundle__title {
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 700;
+  color: var(--offer-bundle-accent);
+}
+
+.offer-bundle__title p {
+  margin: 0;
+}
+
+.offer-bundle__price {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+}
+
+.offer-bundle__price-current {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
+  color: var(--offer-bundle-accent);
+}
+
+.offer-bundle__price-compare {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 400;
+  color: #4B413A;
+  text-decoration: line-through;
+}
+
+/* ---- Benefits ---- */
+.offer-bundle__benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.offer-bundle__benefit {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 500;
+  color: #000000;
+}
+
+.offer-bundle__benefit-icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+/* ---- Product Items ---- */
+.offer-bundle__items {
+  display: flex;
+  flex-direction: column;
+}
+
+.offer-bundle-item {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  padding-block: 12px;
+  border-block-end: 1px solid color-mix(in srgb, var(--offer-bundle-accent) 15%, transparent);
+}
+
+.offer-bundle-item:last-child {
+  border-block-end: none;
+}
+
+.offer-bundle-item__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: color-mix(in srgb, var(--offer-bundle-accent) 10%, transparent);
+}
+
+.offer-bundle-item__icon img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.offer-bundle-item__icon-placeholder {
+  width: 40px;
+  height: 40px;
+}
+
+.offer-bundle-item__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.offer-bundle-item__top-row {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.offer-bundle-item__title {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+  color: var(--offer-bundle-accent);
+  flex: 1;
+  min-width: 0;
+}
+
+.offer-bundle-item__title-prefix {
+  font-weight: 700;
+}
+
+.offer-bundle-item__title-text {
+  font-weight: 700;
+}
+
+.offer-bundle-item__badges {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.offer-bundle-item__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  color: #000000;
+  background-color: color-mix(in srgb, var(--offer-bundle-accent) 10%, transparent);
+}
+
+.offer-bundle-item__description {
+  margin: 0;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  color: #000000;
+}
+
+/* ---- Bottom Benefits ---- */
+.offer-bundle__bottom-benefits {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 0;
+}
+
+.offer-bundle__bottom-benefit {
+  display: inline-flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: #000000;
+}
+
+.offer-bundle__bottom-benefit img {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+}
+
+/* ---- CTA Button ---- */
+.offer-bundle__cta-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 480px;
+  margin-inline: auto;
+  padding: 16px 32px;
+  border-radius: 24px;
+  border: none;
+  background-color: var(--offer-bundle-accent);
+  color: #FFFFFF;
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.offer-bundle__cta-button:hover {
+  opacity: 0.9;
+}
+
+.offer-bundle__cta-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.offer-bundle__cta-button:focus-visible {
+  outline: 2px solid var(--offer-bundle-accent);
+  outline-offset: 2px;
+}
+
+.offer-bundle__cta-price {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+}
+
+.offer-bundle__cta-price-compare {
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 400;
+  text-decoration: line-through;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.offer-bundle__cta-price-current {
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* ---- Shipping Info ---- */
+.offer-bundle__shipping-info {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  justify-content: center;
+}
+
+.offer-bundle__shipping-item {
+  display: inline-flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: #000000;
+}
+
+.offer-bundle__shipping-item img {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ---- Mobile Styles ---- */
+@media screen and (max-width: 960px) {
+  .offer-bundle__container {
+    grid-template-columns: 1fr;
+  }
+
+  .offer-bundle__image-column {
+    padding-block-end: 0;
+  }
+
+  .offer-bundle__thumbnails {
+    display: none;
+  }
+
+  .offer-bundle__content-column {
+    padding: 24px 16px 56px;
+  }
+
+  .offer-bundle__title {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .offer-bundle__price-current {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .offer-bundle__benefit {
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 400;
+  }
+
+  .offer-bundle__cta-button {
+    max-width: 100%;
+    padding: 16px 24px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.offer_bundle",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:content.image"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "t:settings.image"
+    },
+    {
+      "type": "text",
+      "id": "promo_label_1_text",
+      "label": "t:settings.promo_label_1_text",
+      "default": "BUY 2, GET 1 FREE FOR LIFE"
+    },
+    {
+      "type": "color",
+      "id": "promo_label_1_color",
+      "label": "t:settings.promo_label_1_color",
+      "default": "#D9384A"
+    },
+    {
+      "type": "text",
+      "id": "promo_label_2_text",
+      "label": "t:settings.promo_label_2_text",
+      "default": "Parent's Choice"
+    },
+    {
+      "type": "color",
+      "id": "promo_label_2_color",
+      "label": "t:settings.promo_label_2_color",
+      "default": "#663AB5"
+    },
+    {
+      "type": "header",
+      "content": "t:content.text"
+    },
+    {
+      "type": "range",
+      "id": "rating_stars",
+      "label": "t:settings.rating_stars",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "default": 45,
+      "info": "t:info.rating_stars_info"
+    },
+    {
+      "type": "text",
+      "id": "rating_count",
+      "label": "t:settings.rating_count",
+      "default": "(5,870)"
+    },
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "t:settings.title",
+      "default": "<p>Try the Complete Wellness Bundle: Free Mystery Gift and Free Elderberry <strong>FOR LIFE.</strong></p>"
+    },
+    {
+      "type": "textarea",
+      "id": "benefits",
+      "label": "t:settings.benefits",
+      "default": "13 Essential vitamins & iodine for brain, immunity & mood.\nMade from real fruit, no sugar cane or synthetics\nClinician backed, health-care worker approved\nMade for picky eaters - 77% love the taste immediately"
+    },
+    {
+      "type": "header",
+      "content": "t:content.buttons"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "t:settings.button",
+      "default": "ADD TO CART"
+    },
+    {
+      "type": "textarea",
+      "id": "bottom_benefits",
+      "label": "t:settings.bottom_benefits",
+      "default": "Free Shipping\nLifetime discount\nFree Samples\nEasily skip or cancel anytime"
+    },
+    {
+      "type": "text",
+      "id": "shipping_text",
+      "label": "t:settings.shipping_text",
+      "default": "Delivered every month"
+    },
+    {
+      "type": "text",
+      "id": "guarantee_text",
+      "label": "t:settings.guarantee_text",
+      "default": "100 Days Money Back Guarantee"
+    },
+    {
+      "type": "header",
+      "content": "t:content.colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "t:settings.accent_color",
+      "default": "#680040"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 64,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product-item",
+      "name": "t:names.offer_bundle_product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "t:settings.product"
+        },
+        {
+          "type": "text",
+          "id": "custom_title",
+          "label": "t:settings.custom_title"
+        },
+        {
+          "type": "text",
+          "id": "title_prefix",
+          "label": "t:settings.title_prefix"
+        },
+        {
+          "type": "color",
+          "id": "title_prefix_color",
+          "label": "t:settings.title_prefix_color",
+          "default": "#D9384A"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "t:settings.description"
+        },
+        {
+          "type": "text",
+          "id": "flavor_label",
+          "label": "t:settings.flavor_label"
+        },
+        {
+          "type": "text",
+          "id": "count_label",
+          "label": "t:settings.count_label"
+        },
+        {
+          "type": "checkbox",
+          "id": "is_free",
+          "label": "t:settings.is_free",
+          "default": false
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "t:settings.custom_icon"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.offer_bundle",
+      "blocks": [
+        {
+          "type": "product-item",
+          "settings": {
+            "custom_title": "Multivitamin Gummies",
+            "description": "13 Essential Vitamins + Iodine",
+            "flavor_label": "Strawberry",
+            "count_label": "90ct",
+            "is_free": false
+          }
+        },
+        {
+          "type": "product-item",
+          "settings": {
+            "custom_title": "Prebiotic & Probiotic Gummies",
+            "description": "Gut Health & Digestion",
+            "flavor_label": "Mixed Berry",
+            "count_label": "60ct",
+            "is_free": false
+          }
+        },
+        {
+          "type": "product-item",
+          "settings": {
+            "custom_title": "Elderberry Gummies",
+            "title_prefix": "FREE FOR LIFE",
+            "title_prefix_color": "#D9384A",
+            "description": "Immunity Boosters",
+            "count_label": "90ct",
+            "is_free": true
+          }
+        },
+        {
+          "type": "product-item",
+          "settings": {
+            "custom_title": "Mystery Gift",
+            "title_prefix": "FREE",
+            "title_prefix_color": "#D9384A",
+            "description": "Something fun for your kiddo!",
+            "is_free": true
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

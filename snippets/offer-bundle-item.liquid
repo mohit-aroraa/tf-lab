@@ -1,0 +1,90 @@
+{% doc %}
+  Offer Bundle Item
+
+  Renders a single product item row inside the offer bundle section.
+
+  @param {object} block - The block object with settings and shopify_attributes (required)
+  @param {string} accent_color - The accent color hex value for styling (required)
+
+  @example
+    {% render 'offer-bundle-item', block: block, accent_color: section.settings.accent_color %}
+{% enddoc %}
+
+{% liquid
+  assign block = block | default: empty
+  assign accent_color = accent_color | default: '#680040'
+
+  unless block != empty
+    break
+  endunless
+
+  assign product = block.settings.product
+  assign has_product = false
+  if product != blank
+    assign has_product = true
+  endif
+
+  assign title_text = block.settings.custom_title
+  if title_text == blank and has_product
+    assign title_text = product.title
+  endif
+
+  assign description_text = block.settings.description
+  assign title_prefix = block.settings.title_prefix
+  assign title_prefix_color = block.settings.title_prefix_color
+  assign flavor_label = block.settings.flavor_label
+  assign count_label = block.settings.count_label
+  assign custom_icon = block.settings.custom_icon
+%}
+
+<div class="offer-bundle-item" {{ block.shopify_attributes }}>
+  <div class="offer-bundle-item__icon">
+    {% if has_product and product.featured_image != blank %}
+      <img
+        src="{{ product.featured_image | image_url: width: 80 }}"
+        alt="{{ product.featured_image.alt | escape }}"
+        width="40"
+        height="40"
+        loading="lazy"
+      >
+    {% elsif custom_icon != blank %}
+      <img
+        src="{{ custom_icon | image_url: width: 80 }}"
+        alt="{{ title_text | escape }}"
+        width="40"
+        height="40"
+        loading="lazy"
+      >
+    {% else %}
+      <div class="offer-bundle-item__icon-placeholder"></div>
+    {% endif %}
+  </div>
+
+  <div class="offer-bundle-item__info">
+    <div class="offer-bundle-item__top-row">
+      <div class="offer-bundle-item__title">
+        {% if title_prefix != blank %}
+          <span class="offer-bundle-item__title-prefix" style="color: {{ title_prefix_color }};">{{ title_prefix }}</span>
+        {% endif %}
+        {% if title_text != blank %}
+          <span class="offer-bundle-item__title-text">{{ title_text | escape }}</span>
+        {% endif %}
+      </div>
+
+      {% if flavor_label != blank or count_label != blank %}
+        <div class="offer-bundle-item__badges">
+          {% if flavor_label != blank %}
+            <span class="offer-bundle-item__badge">{{ flavor_label | escape }}</span>
+          {% endif %}
+          {% if count_label != blank %}
+            <span class="offer-bundle-item__badge">{{ count_label | escape }}</span>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+
+    {% if description_text != blank %}
+      <p class="offer-bundle-item__description">{{ description_text | escape }}</p>
+    {% endif %}
+  </div>
+</div>
