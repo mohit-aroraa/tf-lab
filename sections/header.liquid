@@ -17,6 +17,10 @@
     render 'slideshow-styles'
   endif
 
+  if section.settings.transparent_on_hero and template.name == 'index'
+    assign transparent_hero = true
+  endif
+
   if section.settings.enable_transparent_header_home and template.name == 'index'
     assign transparent = 'always'
     assign transparent_color_scheme = section.settings.home_color_scheme
@@ -303,6 +307,9 @@
   {% endif %}
   {% if sticky %}
     sticky="{{ sticky }}"
+  {% endif %}
+  {% if transparent_hero %}
+    data-transparent-header
   {% endif %}
   data-skip-node-update
   data-scroll-direction="none"
@@ -1111,6 +1118,40 @@
     font-family: var(--menu-localization-font);
     font-size: var(--menu-localization-font-size);
   }
+
+  /* Transparent hero header system */
+  body:has(#header-component[data-transparent-header]) {
+    --transparent-header-offset-boolean: 1;
+  }
+
+  #header-component[data-transparent-header] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--layer-overlay);
+    --header-logo-display: none;
+    --header-logo-inverse-display: block;
+    --closed-underlay-height: 0px;
+  }
+
+  #header-component[data-transparent-header] .header__underlay-closed {
+    transition: height 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  #header-component[data-transparent-header] :is(a, .button) {
+    transition: color 0.35s ease, border-color 0.35s ease;
+  }
+
+  #header-component[data-transparent-header][data-scrolled] {
+    --closed-underlay-height: 100%;
+    --header-logo-display: unset;
+    --header-logo-inverse-display: unset;
+  }
+
+  #header-component[data-transparent-header][data-scrolled] .header__underlay-closed {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  }
 {% endstylesheet %}
 
 {% unless request.design_mode %}
@@ -1564,7 +1605,24 @@
       "id": "color_scheme_transparent",
       "label": "t:settings.inverse",
       "default": "primary",
-      "visible_if": "{{ section.settings.enable_transparent_header_home or section.settings.enable_transparent_header_product or section.settings.enable_transparent_header_collection }}"
+      "visible_if": "{{ section.settings.enable_transparent_header_home or section.settings.enable_transparent_header_product or section.settings.enable_transparent_header_collection or section.settings.transparent_on_hero }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.transparent_hero"
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_on_hero",
+      "label": "t:settings.transparent_on_hero",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_light",
+      "label": "t:settings.logo_light",
+      "info": "t:info.logo_light",
+      "visible_if": "{{ section.settings.transparent_on_hero }}"
     },
     {
       "type": "header",

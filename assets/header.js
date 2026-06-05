@@ -134,7 +134,9 @@ class HeaderComponent extends Component {
 
   #updateScrollState = () => {
     const stickyMode = this.getAttribute('sticky');
-    if (!this.#offscreen && stickyMode !== 'always') return;
+    const hasTransparentHeader = this.hasAttribute('data-transparent-header');
+
+    if (!this.#offscreen && stickyMode !== 'always' && !hasTransparentHeader) return;
 
     const scrollTop = document.scrollingElement?.scrollTop ?? 0;
     const headerTop = this.getBoundingClientRect().top;
@@ -180,6 +182,17 @@ class HeaderComponent extends Component {
     }
 
     this.#lastScrollTop = scrollTop;
+
+    // Transparent hero: toggle data-scrolled at 50px threshold
+    if (hasTransparentHeader) {
+      const scrolled = scrollTop > 50;
+
+      if (scrolled && !this.hasAttribute('data-scrolled')) {
+        this.setAttribute('data-scrolled', '');
+      } else if (!scrolled && this.hasAttribute('data-scrolled')) {
+        this.removeAttribute('data-scrolled');
+      }
+    }
   };
 
   connectedCallback() {
@@ -194,6 +207,11 @@ class HeaderComponent extends Component {
       if (stickyMode === 'scroll-up' || stickyMode === 'always') {
         document.addEventListener('scroll', this.#handleWindowScroll);
       }
+    }
+
+    // Attach scroll listener for transparent hero if not already attached by sticky mode
+    if (this.hasAttribute('data-transparent-header') && !(stickyMode === 'scroll-up' || stickyMode === 'always')) {
+      document.addEventListener('scroll', this.#handleWindowScroll);
     }
   }
 

@@ -10,8 +10,14 @@
     assign use_inverse_logo = true
   endif
 
+  if section.settings.transparent_on_hero and template.name == 'index'
+    assign use_inverse_logo = true
+  endif
+
   if use_inverse_logo
-    if settings.logo_inverse != blank
+    if section.settings.logo_light != blank
+      assign inverse_logo = section.settings.logo_light
+    elsif settings.logo_inverse != blank
       assign inverse_logo = settings.logo_inverse
     else
       assign inverse_logo = settings.logo
