@@ -1,0 +1,48 @@
+/* ==========================================================================
+   Graza Brand Design Tokens
+   Defines --graza-* custom properties and .graza-btn utility class.
+   Loaded after base.css, before section stylesheets.
+   ========================================================================== */
+
+:root {
+  /* Colors */
+  --graza-color-dark: #1f2b1e;
+  --graza-color-cream: #f5f0e8;
+  --graza-color-olive: #4a5e3a;
+  --graza-color-white: #ffffff;
+  --graza-color-cta: #2b3b2e;
+  --graza-color-cta-hover: #3d5230;
+
+  /* Shadows */
+  --graza-shadow-cta: 4px 4px 0px #1a2818;
+  --graza-shadow-cta-hover: 2px 2px 0px #1a2818;
+
+  /* Typography */
+  --graza-font-heading: 'GT Alpina', Georgia, serif;
+  --graza-font-body: 'Helvetica Neue', Arial, sans-serif;
+
+  /* Transitions */
+  --graza-transition-header: background-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* Button utility */
+.graza-btn {
+  display: inline-block;
+  background: var(--graza-color-cta);
+  color: #fff;
+  padding: 14px 28px;
+  border-radius: 2px;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: var(--graza-shadow-cta);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+  border: none;
+
+  &:hover {
+    box-shadow: var(--graza-shadow-cta-hover);
+    transform: translate(2px, 2px);
+  }
+}
