@@ -1,0 +1,184 @@
+/* ==========================================================================
+   Graza Hero Section
+   Self-contained styles for the full-viewport hero with background media,
+   overlay, centered text, and CTA buttons.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Custom Properties
+   -------------------------------------------------------------------------- */
+:root {
+  --graza-font-heading: var(--font-heading--family);
+  --graza-color-cta: #1a2818;
+  --graza-shadow-cta: 4px 4px 0px #1a2818;
+}
+
+/* --------------------------------------------------------------------------
+   Button Utility
+   -------------------------------------------------------------------------- */
+.graza-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 32px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  border: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .graza-btn {
+    transition: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Hero Layout
+   -------------------------------------------------------------------------- */
+.graza-hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --------------------------------------------------------------------------
+   Background Media
+   -------------------------------------------------------------------------- */
+.graza-hero__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Overlay
+   -------------------------------------------------------------------------- */
+.graza-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, var(--graza-hero-overlay, 0.3));
+  z-index: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Content
+   -------------------------------------------------------------------------- */
+.graza-hero__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  gap: 24px;
+  max-width: 900px;
+}
+
+/* --------------------------------------------------------------------------
+   Typography
+   -------------------------------------------------------------------------- */
+.graza-hero__heading {
+  font-family: var(--graza-font-heading);
+  font-size: 64px;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--graza-hero-text-color, #ffffff);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.graza-hero__subheading {
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--graza-hero-text-color, #ffffff);
+  margin: 0;
+  max-width: 600px;
+}
+
+/* --------------------------------------------------------------------------
+   CTA Buttons
+   -------------------------------------------------------------------------- */
+.graza-hero__ctas {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Primary CTA */
+.graza-hero__cta--primary {
+  background: var(--graza-color-cta);
+  color: #ffffff;
+  box-shadow: var(--graza-shadow-cta);
+
+  &:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px #1a2818;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+}
+
+/* Secondary CTA */
+.graza-hero__cta--secondary {
+  background: transparent;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  box-shadow: 4px 4px 0px rgba(255, 255, 255, 0.5);
+
+  &:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px rgba(255, 255, 255, 0.5);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Responsive — Mobile
+   -------------------------------------------------------------------------- */
+@media screen and (max-width: 749px) {
+  .graza-hero__heading {
+    font-size: 36px;
+  }
+
+  .graza-hero__subheading {
+    font-size: 16px;
+  }
+
+  .graza-hero__content {
+    padding: 32px 16px;
+    gap: 20px;
+  }
+
+  .graza-hero__ctas {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .graza-hero__cta--primary,
+  .graza-hero__cta--secondary {
+    width: 100%;
+  }
+}

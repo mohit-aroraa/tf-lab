@@ -9,6 +9,17 @@
  */
 {
   "sections": {
+    "graza_hero": {
+      "type": "graza-hero",
+      "settings": {
+        "heading": "Extra Virgin Olive Oil",
+        "subheading": "makes everything better",
+        "overlay_opacity": 30,
+        "text_color": "#ffffff",
+        "cta_primary_label": "Shop Now",
+        "cta_secondary_label": "Learn More"
+      }
+    },
     "hero_jVaWmY": {
       "type": "hero",
       "blocks": {
@@ -287,6 +298,7 @@
     }
   },
   "order": [
+    "graza_hero",
     "hero_jVaWmY",
     "product_list_fa6P9H"
   ]
