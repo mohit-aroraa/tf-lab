@@ -136,10 +136,11 @@
         {%- comment -%} Rating {%- endcomment -%}
         {% if rating_stars > 0 %}
           <div class="offer-bundle__rating">
+            {% assign half_star_position = full_stars | plus: 1 %}
             {% for i in (1..5) %}
               {% if i <= full_stars %}
                 <img src="{{ 'star-5.svg' | asset_url }}" alt="" width="16" height="16" class="offer-bundle__star-icon">
-              {% elsif has_half_star and i == full_stars | plus: 1 %}
+              {% elsif has_half_star and i == half_star_position %}
                 <img src="{{ 'starhalf-2.svg' | asset_url }}" alt="" width="16" height="16" class="offer-bundle__star-icon">
               {% endif %}
             {% endfor %}
