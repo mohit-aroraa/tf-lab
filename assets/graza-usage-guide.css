@@ -1,0 +1,108 @@
+.graza-usage-guide {
+  padding-top: var(--graza-usage-padding-top, 48px);
+  padding-bottom: var(--graza-usage-padding-bottom, 48px);
+}
+
+.graza-usage-guide__inner {
+  max-width: var(--page-width);
+  margin-inline: auto;
+  padding-inline: var(--padding-md);
+}
+
+.graza-usage-guide__header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.graza-usage-guide__heading {
+  margin: 0 0 8px;
+  font-family: var(--font-heading--family);
+  font-weight: var(--font-heading--weight);
+  font-size: var(--font-size--2xl);
+  line-height: 1.2;
+}
+
+.graza-usage-guide__subheading {
+  margin: 0;
+  font-family: var(--font-body--family);
+  font-size: var(--font-size--base);
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+.graza-usage-guide__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.graza-usage-guide__card {
+  overflow: hidden;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.graza-usage-guide__card:hover {
+  transform: translateY(-2px);
+}
+
+.graza-usage-guide__card-image-wrapper {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.graza-usage-guide__card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.graza-usage-guide__card-image-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: currentColor;
+  opacity: 0.08;
+}
+
+.graza-usage-guide__card-content {
+  padding: 16px 0;
+}
+
+.graza-usage-guide__card-title {
+  margin: 0 0 8px;
+  font-family: var(--font-heading--family);
+  font-weight: var(--font-heading--weight);
+  font-size: var(--font-size--md);
+  line-height: 1.3;
+}
+
+.graza-usage-guide__card-description {
+  margin: 0;
+  font-family: var(--font-body--family);
+  font-size: var(--font-size--sm);
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+@media screen and (min-width: 750px) {
+  .graza-usage-guide__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .graza-usage-guide__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .graza-usage-guide__card {
+    transition: none;
+  }
+
+  .graza-usage-guide__card:hover {
+    transform: none;
+  }
+}

@@ -268,6 +268,336 @@
         "padding-block-end": 0
       }
     },
+    "graza_product_usps": {
+      "type": "graza-product-usps",
+      "blocks": {
+        "usp_1": {
+          "type": "usp_item",
+          "settings": {
+            "heading": "High Smoke Point",
+            "description": "Perfect for sautéing, roasting, and frying at high temperatures."
+          }
+        },
+        "usp_2": {
+          "type": "usp_item",
+          "settings": {
+            "heading": "100% Extra Virgin",
+            "description": "Pure, unblended extra virgin olive oil from Puglia, Italy."
+          }
+        },
+        "usp_3": {
+          "type": "usp_item",
+          "settings": {
+            "heading": "Squeeze Bottle",
+            "description": "Easy-to-use squeeze bottle for precise, mess-free pouring."
+          }
+        }
+      },
+      "block_order": ["usp_1", "usp_2", "usp_3"],
+      "settings": {
+        "heading": "Why Sizzle?",
+        "background_color": "#F5F0E8",
+        "text_color": "#1a1a1a",
+        "columns_desktop": "3",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "graza_usage_guide": {
+      "type": "graza-usage-guide",
+      "blocks": {
+        "usage_1": {
+          "type": "usage_card",
+          "settings": {
+            "title": "Sautéing",
+            "description": "Heat Sizzle in a pan over medium-high heat. Perfect for vegetables, proteins, and stir-fries."
+          }
+        },
+        "usage_2": {
+          "type": "usage_card",
+          "settings": {
+            "title": "Roasting",
+            "description": "Coat vegetables or proteins with Sizzle before roasting for a crispy, golden finish."
+          }
+        },
+        "usage_3": {
+          "type": "usage_card",
+          "settings": {
+            "title": "Frying",
+            "description": "Use Sizzle for shallow or deep frying — its high smoke point keeps flavors clean."
+          }
+        }
+      },
+      "block_order": ["usage_1", "usage_2", "usage_3"],
+      "settings": {
+        "heading": "How to Use Sizzle",
+        "subheading": "Your go-to cooking oil for every occasion.",
+        "background_color": "#FFFFFF",
+        "text_color": "#1a1a1a",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "graza_product_story": {
+      "type": "graza-product-story",
+      "blocks": {
+        "detail_1": {
+          "type": "detail_item",
+          "settings": {
+            "label": "Origin",
+            "value": "Puglia, Italy"
+          }
+        },
+        "detail_2": {
+          "type": "detail_item",
+          "settings": {
+            "label": "Olive Type",
+            "value": "Coratina & Ogliarola"
+          }
+        },
+        "detail_3": {
+          "type": "detail_item",
+          "settings": {
+            "label": "Taste Profile",
+            "value": "Robust, peppery, full-bodied"
+          }
+        }
+      },
+      "block_order": ["detail_1", "detail_2", "detail_3"],
+      "settings": {
+        "image_position": "left",
+        "heading": "What's Inside",
+        "description": "<p>Our Sizzle olive oil is made from a blend of Coratina and Ogliarola olives, cold-pressed within hours of harvest in Puglia, Italy. The result is a robust, full-flavored oil that's perfect for cooking.</p>",
+        "background_color": "#FFFFFF",
+        "text_color": "#1a1a1a",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "graza_press_logos": {
+      "type": "graza-press-logos",
+      "blocks": {
+        "logo_1": {
+          "type": "press_logo"
+        },
+        "logo_2": {
+          "type": "press_logo"
+        },
+        "logo_3": {
+          "type": "press_logo"
+        },
+        "logo_4": {
+          "type": "press_logo"
+        }
+      },
+      "block_order": ["logo_1", "logo_2", "logo_3", "logo_4"],
+      "settings": {
+        "heading": "As Seen In",
+        "show_heading": true,
+        "background_color": "#F5F0E8",
+        "text_color": "#1a1a1a",
+        "grayscale": true,
+        "logo_height": 40,
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "graza_reviews": {
+      "type": "graza-reviews",
+      "blocks": {
+        "review_1": {
+          "type": "review_card",
+          "settings": {
+            "rating": 5,
+            "review_text": "Sizzle is the only olive oil I use for cooking now. The flavor is unmatched and the squeeze bottle is genius.",
+            "author_name": "Sarah M."
+          }
+        },
+        "review_2": {
+          "type": "review_card",
+          "settings": {
+            "rating": 5,
+            "review_text": "I was skeptical about cooking with EVOO at high heat, but Sizzle handles it perfectly. My food has never tasted better.",
+            "author_name": "James K."
+          }
+        },
+        "review_3": {
+          "type": "review_card",
+          "settings": {
+            "rating": 4,
+            "review_text": "Great quality olive oil at a reasonable price. The squeeze bottle makes it so easy to control how much I use.",
+            "author_name": "Maria L."
+          }
+        }
+      },
+      "block_order": ["review_1", "review_2", "review_3"],
+      "settings": {
+        "heading": "What People Are Saying",
+        "show_average_rating": false,
+        "background_color": "#FFFFFF",
+        "text_color": "#1a1a1a",
+        "columns_desktop": "3",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "graza_faq": {
+      "type": "section",
+      "blocks": {
+        "faq_heading": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<h2>Frequently Asked Questions</h2>",
+            "type_preset": "h3",
+            "font": "var(--font-body--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "left",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          }
+        },
+        "faq_accordion": {
+          "type": "accordion",
+          "name": "t:names.accordion",
+          "settings": {
+            "icon": "caret",
+            "dividers": true,
+            "type_preset": "h5",
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "faq_row_1": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "What makes Sizzle different from Drizzle?"
+              },
+              "blocks": {
+                "text": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Sizzle is our high-heat cooking olive oil, designed for sautéing, roasting, and frying. Drizzle is our finishing oil, best used raw on salads, pasta, and bread. Both are 100% extra virgin olive oil from Italy.</p>",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                }
+              },
+              "block_order": ["text"]
+            },
+            "faq_row_2": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "How should I store my olive oil?"
+              },
+              "blocks": {
+                "text": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Store your Sizzle in a cool, dark place away from direct sunlight and heat. Our squeeze bottle is designed to minimize air exposure and keep the oil fresh longer.</p>",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                }
+              },
+              "block_order": ["text"]
+            },
+            "faq_row_3": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "What is the return policy?"
+              },
+              "blocks": {
+                "text": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>We want you to love your Graza. If you're not satisfied, reach out to us within 30 days of purchase and we'll make it right.</p>",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                }
+              },
+              "block_order": ["text"]
+            }
+          },
+          "block_order": ["faq_row_1", "faq_row_2", "faq_row_3"]
+        }
+      },
+      "block_order": ["faq_heading", "faq_accordion"],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 32,
+        "section_width": "page-width",
+        "section_height": "",
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
     "product_recommendations_qggXJq": {
       "type": "product-recommendations",
       "blocks": {
@@ -412,6 +742,12 @@
   },
   "order": [
     "main",
+    "graza_product_usps",
+    "graza_usage_guide",
+    "graza_product_story",
+    "graza_press_logos",
+    "graza_reviews",
+    "graza_faq",
     "product_recommendations_qggXJq"
   ]
 }

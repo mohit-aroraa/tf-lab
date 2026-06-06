@@ -1,0 +1,186 @@
+{{ 'graza-press-logos.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="graza-press-logos"
+  style="
+    background-color: {{ section.settings.background_color }};
+    color: {{ section.settings.text_color }};
+    --graza-press-padding-top: {{ section.settings.padding_top }}px;
+    --graza-press-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --graza-press-logo-height: {{ section.settings.logo_height }}px;
+  "
+>
+  <div class="graza-press-logos__inner">
+    {% if section.settings.show_heading and section.settings.heading != blank %}
+      <h2 class="graza-press-logos__heading">
+        {{ section.settings.heading | escape }}
+      </h2>
+    {% endif %}
+
+    <div class="graza-press-logos__list">
+      {% for block in section.blocks %}
+        {% liquid
+          assign grayscale_class = ''
+          if section.settings.grayscale
+            assign grayscale_class = ' graza-press-logos__item--grayscale'
+          endif
+        %}
+
+        <div class="graza-press-logos__item{{ grayscale_class }}" {{ block.shopify_attributes }}>
+          {% if block.settings.logo != blank %}
+            {% liquid
+              assign logo_alt = block.settings.alt_text | default: block.settings.logo.alt
+            %}
+
+            {% if block.settings.link != blank %}
+              <a href="{{ block.settings.link }}" target="_blank" rel="noopener noreferrer">
+                {{
+                  block.settings.logo
+                  | image_url: width: 400
+                  | image_tag:
+                    class: 'graza-press-logos__logo',
+                    loading: 'lazy',
+                    widths: '120,200,400',
+                    sizes: '200px',
+                    alt: logo_alt
+                }}
+              </a>
+            {% else %}
+              {{
+                block.settings.logo
+                | image_url: width: 400
+                | image_tag:
+                  class: 'graza-press-logos__logo',
+                  loading: 'lazy',
+                  widths: '120,200,400',
+                  sizes: '200px',
+                  alt: logo_alt
+              }}
+            {% endif %}
+          {% else %}
+            <div class="graza-press-logos__logo-placeholder" aria-hidden="true"></div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:names.graza_press_logos",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "As Seen In"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_heading",
+      "label": "Show heading",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#F5F0E8"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "grayscale",
+      "label": "Grayscale logos",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "Logo height",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 48,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "press_logo",
+      "name": "t:names.press_logo",
+      "limit": 10,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo"
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Alt text"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.graza_press_logos",
+      "blocks": [
+        { "type": "press_logo" },
+        { "type": "press_logo" },
+        { "type": "press_logo" },
+        { "type": "press_logo" }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

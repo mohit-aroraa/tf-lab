@@ -1,0 +1,81 @@
+.graza-product-usps {
+  padding-top: var(--graza-usps-padding-top, 48px);
+  padding-bottom: var(--graza-usps-padding-bottom, 48px);
+}
+
+.graza-product-usps__inner {
+  max-width: var(--page-width);
+  margin-inline: auto;
+  padding-inline: var(--padding-md);
+}
+
+.graza-product-usps__heading {
+  margin: 0 0 32px;
+  font-family: var(--font-heading--family);
+  font-weight: var(--font-heading--weight);
+  font-size: var(--font-size--2xl);
+  line-height: 1.2;
+  text-align: center;
+}
+
+.graza-product-usps__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.graza-product-usps__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 16px;
+}
+
+.graza-product-usps__icon {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+  object-fit: contain;
+}
+
+.graza-product-usps__icon-placeholder {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  background-color: currentColor;
+  opacity: 0.1;
+}
+
+.graza-product-usps__card-heading {
+  margin: 0 0 8px;
+  font-family: var(--font-heading--family);
+  font-weight: var(--font-heading--weight);
+  font-size: var(--font-size--md);
+  line-height: 1.3;
+}
+
+.graza-product-usps__card-description {
+  margin: 0;
+  font-family: var(--font-body--family);
+  font-size: var(--font-size--sm);
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+@media screen and (min-width: 750px) {
+  .graza-product-usps__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .graza-product-usps__grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .graza-product-usps__grid--4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

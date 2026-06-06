@@ -1,0 +1,184 @@
+{{ 'graza-usage-guide.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="graza-usage-guide"
+  style="
+    background-color: {{ section.settings.background_color }};
+    color: {{ section.settings.text_color }};
+    --graza-usage-padding-top: {{ section.settings.padding_top }}px;
+    --graza-usage-padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="graza-usage-guide__inner">
+    {% if section.settings.heading != blank or section.settings.subheading != blank %}
+      <div class="graza-usage-guide__header">
+        {% if section.settings.heading != blank %}
+          <h2 class="graza-usage-guide__heading">
+            {{ section.settings.heading | escape }}
+          </h2>
+        {% endif %}
+
+        {% if section.settings.subheading != blank %}
+          <p class="graza-usage-guide__subheading">
+            {{ section.settings.subheading | escape }}
+          </p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="graza-usage-guide__grid">
+      {% for block in section.blocks %}
+        <div class="graza-usage-guide__card" {{ block.shopify_attributes }}>
+          <div class="graza-usage-guide__card-image-wrapper">
+            {% if block.settings.image != blank %}
+              {{
+                block.settings.image
+                | image_url: width: block.settings.image.width
+                | image_tag:
+                  class: 'graza-usage-guide__card-image',
+                  loading: 'lazy',
+                  widths: '375,550,750',
+                  sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw',
+                  alt: block.settings.title
+              }}
+            {% else %}
+              <div class="graza-usage-guide__card-image-placeholder" aria-hidden="true"></div>
+            {% endif %}
+          </div>
+
+          <div class="graza-usage-guide__card-content">
+            {% if block.settings.title != blank %}
+              <h3 class="graza-usage-guide__card-title">
+                {{ block.settings.title | escape }}
+              </h3>
+            {% endif %}
+
+            {% if block.settings.description != blank %}
+              <p class="graza-usage-guide__card-description">
+                {{ block.settings.description | escape }}
+              </p>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:names.graza_usage_guide",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "How to Use Sizzle"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Your go-to cooking oil for every occasion."
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 48,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "usage_card",
+      "name": "t:names.usage_card",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Cooking method"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Describe how to use the product for this cooking method."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.graza_usage_guide",
+      "blocks": [
+        {
+          "type": "usage_card",
+          "settings": {
+            "title": "Sautéing",
+            "description": "Heat Sizzle in a pan over medium-high heat. Perfect for vegetables, proteins, and stir-fries."
+          }
+        },
+        {
+          "type": "usage_card",
+          "settings": {
+            "title": "Roasting",
+            "description": "Coat vegetables or proteins with Sizzle before roasting for a crispy, golden finish."
+          }
+        },
+        {
+          "type": "usage_card",
+          "settings": {
+            "title": "Frying",
+            "description": "Use Sizzle for shallow or deep frying — its high smoke point keeps flavors clean."
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

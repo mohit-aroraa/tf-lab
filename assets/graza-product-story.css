@@ -1,0 +1,112 @@
+.graza-product-story {
+  padding-top: var(--graza-story-padding-top, 48px);
+  padding-bottom: var(--graza-story-padding-bottom, 48px);
+}
+
+.graza-product-story__inner {
+  max-width: var(--page-width);
+  margin-inline: auto;
+  padding-inline: var(--padding-md);
+}
+
+.graza-product-story__layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: center;
+}
+
+.graza-product-story__image-wrapper {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.graza-product-story__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.graza-product-story__image-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: currentColor;
+  opacity: 0.08;
+}
+
+.graza-product-story__content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.graza-product-story__heading {
+  margin: 0;
+  font-family: var(--font-heading--family);
+  font-weight: var(--font-heading--weight);
+  font-size: var(--font-size--2xl);
+  line-height: 1.2;
+}
+
+.graza-product-story__description {
+  margin: 0;
+  font-family: var(--font-body--family);
+  font-size: var(--font-size--base);
+  line-height: 1.6;
+}
+
+.graza-product-story__description p {
+  margin: 0 0 12px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.graza-product-story__details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid currentColor;
+  opacity: 0.9;
+}
+
+.graza-product-story__detail-item {
+  display: flex;
+  gap: 8px;
+  font-family: var(--font-body--family);
+  font-size: var(--font-size--sm);
+  line-height: 1.5;
+}
+
+.graza-product-story__detail-label {
+  font-weight: 600;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+.graza-product-story__detail-value {
+  opacity: 0.8;
+}
+
+@media screen and (min-width: 750px) {
+  .graza-product-story__layout {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+
+  .graza-product-story__layout--image-right {
+    direction: rtl;
+  }
+
+  .graza-product-story__layout--image-right > * {
+    direction: ltr;
+  }
+
+  .graza-product-story__details {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

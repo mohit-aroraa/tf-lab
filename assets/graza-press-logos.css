@@ -1,0 +1,71 @@
+.graza-press-logos {
+  padding-top: var(--graza-press-padding-top, 48px);
+  padding-bottom: var(--graza-press-padding-bottom, 48px);
+}
+
+.graza-press-logos__inner {
+  max-width: var(--page-width);
+  margin-inline: auto;
+  padding-inline: var(--padding-md);
+}
+
+.graza-press-logos__heading {
+  margin: 0 0 32px;
+  font-family: var(--font-heading--family);
+  font-weight: var(--font-heading--weight);
+  font-size: var(--font-size--lg);
+  line-height: 1.3;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.graza-press-logos__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 32px 40px;
+}
+
+.graza-press-logos__item {
+  display: inline-flex;
+  align-items: center;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.graza-press-logos__item--grayscale {
+  filter: grayscale(100%);
+  opacity: 0.6;
+
+  &:hover {
+    filter: grayscale(0%);
+    opacity: 1;
+  }
+}
+
+.graza-press-logos__logo {
+  height: var(--graza-press-logo-height, 40px);
+  width: auto;
+  object-fit: contain;
+}
+
+.graza-press-logos__logo-placeholder {
+  height: var(--graza-press-logo-height, 40px);
+  width: 120px;
+  background-color: currentColor;
+  opacity: 0.1;
+  border-radius: 4px;
+}
+
+@media screen and (min-width: 750px) {
+  .graza-press-logos__list {
+    gap: 32px 56px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .graza-press-logos__item {
+    transition: none;
+  }
+}

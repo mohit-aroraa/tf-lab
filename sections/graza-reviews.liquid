@@ -1,0 +1,240 @@
+{{ 'graza-reviews.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="graza-reviews"
+  style="
+    background-color: {{ section.settings.background_color }};
+    color: {{ section.settings.text_color }};
+    --graza-reviews-padding-top: {{ section.settings.padding_top }}px;
+    --graza-reviews-padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="graza-reviews__inner">
+    <div class="graza-reviews__header">
+      {% if section.settings.heading != blank %}
+        <h2 class="graza-reviews__heading">
+          {{ section.settings.heading | escape }}
+        </h2>
+      {% endif %}
+
+      {% if section.settings.show_average_rating and section.settings.average_rating != blank %}
+        <div class="graza-reviews__average">
+          <span class="graza-reviews__stars">
+            {% assign rating_int = section.settings.average_rating | times: 1 | round %}
+            {% for i in (1..5) %}
+              {% if i <= rating_int %}
+                <svg class="graza-reviews__star graza-reviews__star--filled" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M10 1l2.39 4.84 5.34.78-3.87 3.77.91 5.33L10 13.28l-4.77 2.51.91-5.33-3.87-3.77 5.34-.78L10 1z"/>
+                </svg>
+              {% else %}
+                <svg class="graza-reviews__star graza-reviews__star--empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M10 1l2.39 4.84 5.34.78-3.87 3.77.91 5.33L10 13.28l-4.77 2.51.91-5.33-3.87-3.77 5.34-.78L10 1z"/>
+                </svg>
+              {% endif %}
+            {% endfor %}
+          </span>
+          <span>
+            {{ section.settings.average_rating }}
+            {% if section.settings.total_reviews != blank %}
+              ({{ section.settings.total_reviews }})
+            {% endif %}
+          </span>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="graza-reviews__grid graza-reviews__grid--{{ section.settings.columns_desktop }}">
+      {% for block in section.blocks %}
+        <div class="graza-reviews__card" {{ block.shopify_attributes }}>
+          <div class="graza-reviews__card-stars">
+            {% for i in (1..5) %}
+              {% if i <= block.settings.rating %}
+                <svg class="graza-reviews__star graza-reviews__star--filled" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M10 1l2.39 4.84 5.34.78-3.87 3.77.91 5.33L10 13.28l-4.77 2.51.91-5.33-3.87-3.77 5.34-.78L10 1z"/>
+                </svg>
+              {% else %}
+                <svg class="graza-reviews__star graza-reviews__star--empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M10 1l2.39 4.84 5.34.78-3.87 3.77.91 5.33L10 13.28l-4.77 2.51.91-5.33-3.87-3.77 5.34-.78L10 1z"/>
+                </svg>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          {% if block.settings.review_text != blank %}
+            <p class="graza-reviews__card-text">
+              "{{ block.settings.review_text | escape }}"
+            </p>
+          {% endif %}
+
+          <div class="graza-reviews__card-footer">
+            {% if block.settings.author_name != blank %}
+              <p class="graza-reviews__card-author">
+                {{ block.settings.author_name | escape }}
+              </p>
+            {% endif %}
+
+            {% if block.settings.review_date != blank %}
+              <p class="graza-reviews__card-date">
+                {{ block.settings.review_date | escape }}
+              </p>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:names.graza_reviews",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What People Are Saying"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_average_rating",
+      "label": "Show average rating",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "average_rating",
+      "label": "Average rating"
+    },
+    {
+      "type": "text",
+      "id": "total_reviews",
+      "label": "Total reviews"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Desktop columns",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 48,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review_card",
+      "name": "t:names.review_card",
+      "limit": 9,
+      "settings": [
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "review_text",
+          "label": "Review text",
+          "default": "This olive oil has completely changed how I cook. The flavor is incredible!"
+        },
+        {
+          "type": "text",
+          "id": "author_name",
+          "label": "Author name",
+          "default": "Happy Customer"
+        },
+        {
+          "type": "text",
+          "id": "review_date",
+          "label": "Review date"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.graza_reviews",
+      "blocks": [
+        {
+          "type": "review_card",
+          "settings": {
+            "rating": 5,
+            "review_text": "Sizzle is the only olive oil I use for cooking now. The flavor is unmatched and the squeeze bottle is genius.",
+            "author_name": "Sarah M."
+          }
+        },
+        {
+          "type": "review_card",
+          "settings": {
+            "rating": 5,
+            "review_text": "I was skeptical about cooking with EVOO at high heat, but Sizzle handles it perfectly. My food has never tasted better.",
+            "author_name": "James K."
+          }
+        },
+        {
+          "type": "review_card",
+          "settings": {
+            "rating": 4,
+            "review_text": "Great quality olive oil at a reasonable price. The squeeze bottle makes it so easy to control how much I use.",
+            "author_name": "Maria L."
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

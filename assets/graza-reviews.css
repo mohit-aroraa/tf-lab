@@ -1,0 +1,123 @@
+.graza-reviews {
+  padding-top: var(--graza-reviews-padding-top, 48px);
+  padding-bottom: var(--graza-reviews-padding-bottom, 48px);
+}
+
+.graza-reviews__inner {
+  max-width: var(--page-width);
+  margin-inline: auto;
+  padding-inline: var(--padding-md);
+}
+
+.graza-reviews__header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.graza-reviews__heading {
+  margin: 0 0 8px;
+  font-family: var(--font-heading--family);
+  font-weight: var(--font-heading--weight);
+  font-size: var(--font-size--2xl);
+  line-height: 1.2;
+}
+
+.graza-reviews__average {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body--family);
+  font-size: var(--font-size--sm);
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+.graza-reviews__stars {
+  display: inline-flex;
+  gap: 2px;
+  color: currentColor;
+}
+
+.graza-reviews__star {
+  width: 16px;
+  height: 16px;
+}
+
+.graza-reviews__star--filled {
+  fill: currentColor;
+}
+
+.graza-reviews__star--empty {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.graza-reviews__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.graza-reviews__card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  opacity: 0.9;
+}
+
+.graza-reviews__card-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.graza-reviews__card-text {
+  margin: 0;
+  font-family: var(--font-body--family);
+  font-size: var(--font-size--sm);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+.graza-reviews__card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.graza-reviews__card-author {
+  margin: 0;
+  font-family: var(--font-body--family);
+  font-weight: 600;
+  font-size: var(--font-size--sm);
+  line-height: 1.4;
+}
+
+.graza-reviews__card-date {
+  margin: 0;
+  font-family: var(--font-body--family);
+  font-size: var(--font-size--xs);
+  line-height: 1.4;
+  opacity: 0.6;
+}
+
+@media screen and (min-width: 750px) {
+  .graza-reviews__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .graza-reviews__grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .graza-reviews__grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
