@@ -9,21 +9,12 @@
  */
 {
   "sections": {
-    "graza_hero": {
-      "type": "graza-hero",
-      "settings": {
-        "heading": "Extra Virgin Olive Oil",
-        "subheading": "makes everything better",
-        "overlay_opacity": 30,
-        "text_color": "#ffffff",
-        "cta_primary_label": "Shop Now",
-        "cta_secondary_label": "Learn More"
-      }
-    },
     "graza_announcement_bar": {
       "type": "graza-announcement-bar",
       "settings": {
         "announcement_text": "Free shipping on orders over $50",
+        "announcement_link_label": "",
+        "announcement_link_url": "",
         "background_color": "#2b3b2e",
         "text_color": "#ffffff",
         "show_bar": true
@@ -304,12 +295,67 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "graza_image_text_carousel_rjVdfj": {
+      "type": "graza-image-text-carousel",
+      "blocks": {
+        "image_text_slide_MML9Yq": {
+          "type": "image_text_slide",
+          "settings": {
+            "slide_image": "shopify://shop_images/IMAGE_1_Duo-Glass.jpg",
+            "slide_heading": "Fresh from the grove",
+            "slide_body": "<p>Our extra virgin olive oil is cold-pressed within hours of harvest for peak freshness and flavor.</p>",
+            "slide_cta_label": "Shop Now",
+            "slide_cta_url": "shopify://collections/frontpage",
+            "slide_background_color": "#f5e6c8",
+            "text_position": "right"
+          }
+        },
+        "image_text_slide_zRLUyj": {
+          "type": "image_text_slide",
+          "settings": {
+            "slide_image": "shopify://shop_images/03_baking_0015_v2_6a71b0b1-b902-44fc-9c27-8fa8f5c57de9.jpg",
+            "slide_heading": "Cook with confidence",
+            "slide_body": "<p>High smoke point and bold flavor make it perfect for every dish, from salads to sautees.</p>",
+            "slide_cta_label": "Learn More",
+            "slide_cta_url": "",
+            "slide_background_color": "#c8d5c3",
+            "text_position": "left"
+          }
+        },
+        "image_text_slide_gm8pXG": {
+          "type": "image_text_slide",
+          "settings": {
+            "slide_image": "shopify://shop_images/untitl_9fb4c562-db48-4a26-9dae-8c98307b0903.jpg",
+            "slide_heading": "Sustainable sourcing",
+            "slide_body": "<p>We partner with family farms committed to regenerative agriculture and ethical practices.</p>",
+            "slide_cta_label": "Our Story",
+            "slide_cta_url": "",
+            "slide_background_color": "#d4a574",
+            "text_position": "right"
+          }
+        }
+      },
+      "block_order": [
+        "image_text_slide_MML9Yq",
+        "image_text_slide_zRLUyj",
+        "image_text_slide_gm8pXG"
+      ],
+      "name": "G: Image Text Carousel",
+      "settings": {
+        "section_heading": "",
+        "slides_per_view_desktop": 1,
+        "show_navigation_arrows": true,
+        "show_pagination_dots": true,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
     }
   },
   "order": [
-    "graza_hero",
     "graza_announcement_bar",
     "hero_jVaWmY",
-    "product_list_fa6P9H"
+    "product_list_fa6P9H",
+    "graza_image_text_carousel_rjVdfj"
   ]
 }
