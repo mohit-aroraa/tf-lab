@@ -7,7 +7,7 @@
  * made to this file may be overwritten.
  * ------------------------------------------------------------
  */
- {
+{
   "sections": {
     "main": {
       "type": "product-information",
@@ -71,8 +71,6 @@
               "type": "group",
               "name": "Header",
               "settings": {
-                "link": "",
-                "open_in_new_tab": false,
                 "content_direction": "column",
                 "vertical_on_mobile": true,
                 "horizontal_alignment": "flex-start",
@@ -96,11 +94,13 @@
                 "border_width": 1,
                 "border_opacity": 100,
                 "border_radius": 0,
-                "placeholder": "",
                 "toggle_overlay": false,
                 "overlay_color": "#00000026",
                 "overlay_style": "solid",
                 "gradient_direction": "to top",
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
@@ -293,7 +293,11 @@
           }
         }
       },
-      "block_order": ["usp_1", "usp_2", "usp_3"],
+      "block_order": [
+        "usp_1",
+        "usp_2",
+        "usp_3"
+      ],
       "settings": {
         "heading": "Why Sizzle?",
         "background_color": "#F5F0E8",
@@ -328,7 +332,11 @@
           }
         }
       },
-      "block_order": ["usage_1", "usage_2", "usage_3"],
+      "block_order": [
+        "usage_1",
+        "usage_2",
+        "usage_3"
+      ],
       "settings": {
         "heading": "How to Use Sizzle",
         "subheading": "Your go-to cooking oil for every occasion.",
@@ -363,7 +371,11 @@
           }
         }
       },
-      "block_order": ["detail_1", "detail_2", "detail_3"],
+      "block_order": [
+        "detail_1",
+        "detail_2",
+        "detail_3"
+      ],
       "settings": {
         "image_position": "left",
         "heading": "What's Inside",
@@ -378,19 +390,28 @@
       "type": "graza-press-logos",
       "blocks": {
         "logo_1": {
-          "type": "press_logo"
+          "type": "press_logo",
+          "settings": {}
         },
         "logo_2": {
-          "type": "press_logo"
+          "type": "press_logo",
+          "settings": {}
         },
         "logo_3": {
-          "type": "press_logo"
+          "type": "press_logo",
+          "settings": {}
         },
         "logo_4": {
-          "type": "press_logo"
+          "type": "press_logo",
+          "settings": {}
         }
       },
-      "block_order": ["logo_1", "logo_2", "logo_3", "logo_4"],
+      "block_order": [
+        "logo_1",
+        "logo_2",
+        "logo_3",
+        "logo_4"
+      ],
       "settings": {
         "heading": "As Seen In",
         "show_heading": true,
@@ -430,7 +451,11 @@
           }
         }
       },
-      "block_order": ["review_1", "review_2", "review_3"],
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3"
+      ],
       "settings": {
         "heading": "What People Are Saying",
         "show_average_rating": false,
@@ -449,6 +474,9 @@
           "name": "t:names.heading",
           "settings": {
             "text": "<h2>Frequently Asked Questions</h2>",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "left",
             "type_preset": "h3",
             "font": "var(--font-body--family)",
             "font_size": "",
@@ -456,9 +484,6 @@
             "letter_spacing": "normal",
             "case": "none",
             "wrap": "pretty",
-            "width": "fit-content",
-            "max_width": "narrow",
-            "alignment": "left",
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
@@ -494,6 +519,9 @@
                   "type": "text",
                   "settings": {
                     "text": "<p>Sizzle is our high-heat cooking olive oil, designed for sautéing, roasting, and frying. Drizzle is our finishing oil, best used raw on salads, pasta, and bread. Both are 100% extra virgin olive oil from Italy.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
                     "type_preset": "rte",
                     "font": "var(--font-body--family)",
                     "font_size": "",
@@ -501,9 +529,6 @@
                     "letter_spacing": "normal",
                     "case": "none",
                     "wrap": "pretty",
-                    "width": "100%",
-                    "max_width": "normal",
-                    "alignment": "left",
                     "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
@@ -511,7 +536,9 @@
                   }
                 }
               },
-              "block_order": ["text"]
+              "block_order": [
+                "text"
+              ]
             },
             "faq_row_2": {
               "type": "_accordion-row",
@@ -523,6 +550,9 @@
                   "type": "text",
                   "settings": {
                     "text": "<p>Store your Sizzle in a cool, dark place away from direct sunlight and heat. Our squeeze bottle is designed to minimize air exposure and keep the oil fresh longer.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
                     "type_preset": "rte",
                     "font": "var(--font-body--family)",
                     "font_size": "",
@@ -530,9 +560,6 @@
                     "letter_spacing": "normal",
                     "case": "none",
                     "wrap": "pretty",
-                    "width": "100%",
-                    "max_width": "normal",
-                    "alignment": "left",
                     "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
@@ -540,7 +567,9 @@
                   }
                 }
               },
-              "block_order": ["text"]
+              "block_order": [
+                "text"
+              ]
             },
             "faq_row_3": {
               "type": "_accordion-row",
@@ -552,6 +581,9 @@
                   "type": "text",
                   "settings": {
                     "text": "<p>We want you to love your Graza. If you're not satisfied, reach out to us within 30 days of purchase and we'll make it right.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
                     "type_preset": "rte",
                     "font": "var(--font-body--family)",
                     "font_size": "",
@@ -559,9 +591,6 @@
                     "letter_spacing": "normal",
                     "case": "none",
                     "wrap": "pretty",
-                    "width": "100%",
-                    "max_width": "normal",
-                    "alignment": "left",
                     "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
@@ -569,13 +598,22 @@
                   }
                 }
               },
-              "block_order": ["text"]
+              "block_order": [
+                "text"
+              ]
             }
           },
-          "block_order": ["faq_row_1", "faq_row_2", "faq_row_3"]
+          "block_order": [
+            "faq_row_1",
+            "faq_row_2",
+            "faq_row_3"
+          ]
         }
       },
-      "block_order": ["faq_heading", "faq_accordion"],
+      "block_order": [
+        "faq_heading",
+        "faq_accordion"
+      ],
       "settings": {
         "content_direction": "column",
         "vertical_on_mobile": true,
