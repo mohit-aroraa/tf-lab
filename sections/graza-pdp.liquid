@@ -1,0 +1,963 @@
+{%- liquid
+  assign current_product = product
+  assign selected_variant = current_product.selected_or_first_available_variant
+  assign has_variants = false
+  unless current_product.has_only_default_variant
+    assign has_variants = true
+  endunless
+-%}
+
+<div class="graza-pdp" id="{{ section.id }}">
+  <div class="graza-pdp__inner page-width">
+
+    <!-- LEFT: Image Gallery via Horizon's _product-media-gallery theme block -->
+    <div class="graza-pdp__gallery-col">
+      {%
+        content_for 'block',
+        type: '_product-media-gallery',
+        id: 'media-gallery',
+        closest.product: product
+      %}
+    </div>
+
+    <!-- RIGHT: Buybox -->
+    <div class="graza-pdp__buybox">
+
+      <!-- Product Title -->
+      <div class="graza-pdp__header">
+        <h1 class="graza-pdp__title"><em>"{{ current_product.title }}"</em></h1>
+        {%- unless current_product.type == blank -%}
+          <p class="graza-pdp__product-type">{{ current_product.type }}</p>
+        {%- endunless -%}
+      </div>
+
+      <!-- Star Rating -->
+      {%- if section.settings.show_rating -%}
+        {%- assign rating_int = section.settings.rating_value | floor -%}
+        <div class="graza-pdp__rating" aria-label="{{ section.settings.rating_value }} out of 5 stars">
+          <span class="graza-pdp__stars" aria-hidden="true">
+            {%- for i in (1..5) -%}
+              {%- if i <= rating_int -%}
+                <span class="graza-pdp__star graza-pdp__star--filled">★</span>
+              {%- else -%}
+                <span class="graza-pdp__star">☆</span>
+              {%- endif -%}
+            {%- endfor -%}
+          </span>
+          {%- if section.settings.rating_count != blank -%}
+            <span class="graza-pdp__rating-count">{{ section.settings.rating_count }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <!-- Product Form -->
+      {% form 'product', current_product, id: 'graza-product-form', class: 'graza-pdp__form' %}
+
+        <!-- Variant Image Cards -->
+        {%- if has_variants -%}
+          <div class="graza-pdp__variants">
+            {%- for option in current_product.options_with_values -%}
+              {%- assign opt_pos = forloop.index -%}
+              <div class="graza-pdp__opt-group">
+                <p class="graza-pdp__opt-label">{{ option.name }}</p>
+                <div class="graza-pdp__opt-cards" role="radiogroup" aria-label="{{ option.name }}">
+                  {%- for value in option.values -%}
+                    {%- liquid
+                      assign cv = nil
+                      for v in current_product.variants
+                        if opt_pos == 1 and v.option1 == value
+                          assign cv = v
+                          break
+                        elsif opt_pos == 2 and v.option2 == value
+                          assign cv = v
+                          break
+                        elsif opt_pos == 3 and v.option3 == value
+                          assign cv = v
+                          break
+                        endif
+                      endfor
+                    -%}
+                    <label class="graza-pdp__opt-card{% if option.selected_value == value %} is-active{% endif %}{% if cv.available == false %} is-sold-out{% endif %}">
+                      <input
+                        type="radio"
+                        class="graza-pdp__opt-radio"
+                        name="option{{ opt_pos }}"
+                        value="{{ value | escape }}"
+                        data-opt-index="{{ forloop.parentloop.index0 }}"
+                        {% if option.selected_value == value %}checked{% endif %}
+                        {% if cv.available == false %}aria-disabled="true"{% endif %}
+                      />
+                      <div class="graza-pdp__opt-card-img-wrap">
+                        {%- if cv.featured_image -%}
+                          {{- cv.featured_image | image_url: width: 160 | image_tag:
+                            loading: 'lazy',
+                            alt: value,
+                            class: 'graza-pdp__opt-card-img',
+                            widths: '80, 160',
+                            sizes: '80px'
+                          -}}
+                        {%- elsif current_product.featured_image -%}
+                          {{- current_product.featured_image | image_url: width: 160 | image_tag:
+                            loading: 'lazy',
+                            alt: value,
+                            class: 'graza-pdp__opt-card-img',
+                            widths: '80, 160',
+                            sizes: '80px'
+                          -}}
+                        {%- endif -%}
+                      </div>
+                      <div class="graza-pdp__opt-card-text">
+                        <span class="graza-pdp__opt-card-name">{{ value }}</span>
+                        {%- if cv -%}
+                          <span class="graza-pdp__opt-card-price">{{ cv.price | money }}</span>
+                        {%- endif -%}
+                      </div>
+                    </label>
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        <!-- Price Display -->
+        <div class="graza-pdp__price-row">
+          <span class="graza-pdp__price" data-graza-price>{{ selected_variant.price | money }}</span>
+          {%- if selected_variant.compare_at_price > selected_variant.price -%}
+            <s class="graza-pdp__price-compare" data-graza-compare>{{ selected_variant.compare_at_price | money }}</s>
+            <span class="graza-pdp__price-badge" data-graza-badge>
+              {%- assign saving_pct = selected_variant.compare_at_price | minus: selected_variant.price | times: 100 | divided_by: selected_variant.compare_at_price -%}
+              Save {{ saving_pct }}%
+            </span>
+          {%- endif -%}
+        </div>
+
+        <!-- Hidden variant ID (updated by JS) -->
+        <input type="hidden" name="id" data-graza-variant-id value="{{ selected_variant.id }}" />
+
+        <!-- Subscribe & Save (only if selling plans exist) -->
+        {%- if current_product.selling_plan_groups.size > 0 and section.settings.show_subscribe -%}
+          <div class="graza-pdp__delivery-toggle">
+            <button type="button" class="graza-pdp__delivery-btn is-active" data-delivery-tab="one-time">
+              One-Time
+            </button>
+            <button type="button" class="graza-pdp__delivery-btn" data-delivery-tab="subscribe">
+              Subscribe &amp; Save
+            </button>
+          </div>
+          <div class="graza-pdp__selling-plans" id="graza-selling-plans-{{ section.id }}" hidden>
+            {%- for group in current_product.selling_plan_groups -%}
+              <p class="graza-pdp__plan-group-name">{{ group.name }}</p>
+              {%- for plan in group.selling_plans -%}
+                <label class="graza-pdp__plan-option">
+                  <input type="radio" name="selling_plan" value="{{ plan.id }}" />
+                  {{ plan.name }}
+                  {%- if plan.price_adjustments.size > 0 -%}
+                    {%- assign adj = plan.price_adjustments.first -%}
+                    {%- if adj.value_type == 'percentage' -%}
+                      — Save {{ adj.value }}%
+                    {%- endif -%}
+                  {%- endif -%}
+                </label>
+              {%- endfor -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        <!-- Quantity -->
+        <div class="graza-pdp__qty-section">
+          <div class="graza-pdp__qty-wrap" role="group" aria-label="Quantity">
+            <button type="button" class="graza-pdp__qty-btn" data-qty-dec aria-label="Decrease quantity">
+              <svg width="12" height="2" viewBox="0 0 12 2" fill="none" aria-hidden="true"><rect width="12" height="2" rx="1" fill="currentColor"/></svg>
+            </button>
+            <input
+              type="number"
+              name="quantity"
+              id="graza-qty-{{ section.id }}"
+              value="1"
+              min="1"
+              class="graza-pdp__qty-input"
+              aria-label="Quantity"
+            />
+            <button type="button" class="graza-pdp__qty-btn" data-qty-inc aria-label="Increase quantity">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><rect x="5" width="2" height="12" rx="1" fill="currentColor"/><rect y="5" width="12" height="2" rx="1" fill="currentColor"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Add to Cart -->
+        <button
+          type="submit"
+          class="graza-pdp__atc-btn"
+          data-graza-atc
+          {% if selected_variant.available == false %}disabled aria-disabled="true"{% endif %}
+        >
+          <span data-graza-atc-label>
+            {%- if selected_variant.available -%}
+              Add to Cart
+            {%- else -%}
+              Sold Out
+            {%- endif -%}
+          </span>
+        </button>
+
+        <!-- Trust Badges -->
+        {%- if section.settings.show_trust -%}
+          <div class="graza-pdp__trust">
+            {%- if section.settings.trust_badge_1 != blank -%}
+              <div class="graza-pdp__trust-item">
+                <svg class="graza-pdp__trust-icon" width="18" height="14" viewBox="0 0 20 16" fill="none" aria-hidden="true">
+                  <path d="M17.5 4H14V2C14 1.45 13.55 1 13 1H1C0.45 1 0 1.45 0 2V12C0 12.55 0.45 13 1 13H2C2 14.1 2.9 15 4 15C5.1 15 6 14.1 6 13H12C12 14.1 12.9 15 14 15C15.1 15 16 14.1 16 13H17C17.55 13 18 12.55 18 12V8.5L17.5 4ZM4 13.5C3.45 13.5 3 13.05 3 12.5C3 11.95 3.45 11.5 4 11.5C4.55 11.5 5 11.95 5 12.5C5 13.05 4.55 13.5 4 13.5ZM14 13.5C13.45 13.5 13 13.05 13 12.5C13 11.95 13.45 11.5 14 11.5C14.55 11.5 15 11.95 15 12.5C15 13.05 14.55 13.5 14 13.5ZM16.5 8H14V6H16.08L16.5 8Z" fill="currentColor"/>
+                </svg>
+                <span>{{ section.settings.trust_badge_1 }}</span>
+              </div>
+            {%- endif -%}
+            {%- if section.settings.trust_badge_2 != blank -%}
+              <div class="graza-pdp__trust-item">
+                <svg class="graza-pdp__trust-icon" width="16" height="18" viewBox="0 0 18 20" fill="none" aria-hidden="true">
+                  <path d="M9 0L0 4V10C0 15.55 3.84 20.74 9 22C14.16 20.74 18 15.55 18 10V4L9 0ZM7 14L3 10L4.41 8.59L7 11.17L13.59 4.58L15 6L7 14Z" fill="currentColor"/>
+                </svg>
+                <span>{{ section.settings.trust_badge_2 }}</span>
+              </div>
+            {%- endif -%}
+            {%- if section.settings.trust_badge_3 != blank -%}
+              <div class="graza-pdp__trust-item">
+                <svg class="graza-pdp__trust-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M17 8C8 10 5.9 16.17 3.82 19.16C2.31 21.34 1 21 1 21L3 17C3 17 2 17 2 16C2 15 3 15 3 15L5 11C5 11 4 11 4 10C4 9 5 9 5 9C5.22 8.36 6 7 8 6C10 5 14 5 17 8ZM17.5 11.5C17.5 11.5 18.5 10 20 10C21.5 10 22 11 22 12C22 13 21 14 21 14L19 16.5C19 16.5 20 17 20 18C20 19 19 20 18 20C17 20 15.5 19 15.5 19L13 21C13 21 12 22 11 22C10 22 9 21 9 20C9 19 10 18.5 10 18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <span>{{ section.settings.trust_badge_3 }}</span>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+      {% endform %}
+
+    </div>
+  </div>
+</div>
+
+<!-- Product data for JS variant picker -->
+<script type="application/json" id="graza-product-data-{{ section.id }}">
+  {
+    "id": {{ current_product.id | json }},
+    "url": {{ current_product.url | json }},
+    "variants": {{ current_product.variants | json }}
+  }
+</script>
+
+<script>
+(function () {
+  var sectionId = {{ section.id | json }};
+  var productDataEl = document.getElementById('graza-product-data-' + sectionId);
+  if (!productDataEl) return;
+
+  var productData = JSON.parse(productDataEl.textContent);
+  var variants = productData.variants;
+
+  var form = document.getElementById('graza-product-form');
+  if (!form) return;
+
+  var vidInput = form.querySelector('[data-graza-variant-id]');
+  var priceEl = form.querySelector('[data-graza-price]');
+  var compareEl = form.querySelector('[data-graza-compare]');
+  var badgeEl = form.querySelector('[data-graza-badge]');
+  var atcBtn = form.querySelector('[data-graza-atc]');
+  var atcLabel = form.querySelector('[data-graza-atc-label]');
+  var sectionEl = document.getElementById(sectionId);
+
+  // Track selected options: { "0": "value", "1": "value", ... }
+  var selectedOptions = {};
+  form.querySelectorAll('.graza-pdp__opt-radio:checked').forEach(function (r) {
+    selectedOptions[r.dataset.optIndex] = r.value;
+  });
+
+  function formatMoney(cents) {
+    var amount = (cents / 100).toFixed(2);
+    return '$' + amount;
+  }
+
+  function findVariant() {
+    return variants.find(function (v) {
+      return Object.entries(selectedOptions).every(function (entry) {
+        var idx = entry[0], val = entry[1];
+        if (idx === '0') return v.option1 === val;
+        if (idx === '1') return v.option2 === val;
+        if (idx === '2') return v.option3 === val;
+        return true;
+      });
+    });
+  }
+
+  function updateUI(variant) {
+    if (!variant) return;
+
+    // Update hidden ID
+    if (vidInput) vidInput.value = variant.id;
+
+    // Update price
+    if (priceEl) priceEl.textContent = formatMoney(variant.price);
+    if (compareEl) {
+      if (variant.compare_at_price && variant.compare_at_price > variant.price) {
+        compareEl.textContent = formatMoney(variant.compare_at_price);
+        compareEl.style.display = '';
+        if (badgeEl) {
+          var pct = Math.round((variant.compare_at_price - variant.price) * 100 / variant.compare_at_price);
+          badgeEl.textContent = 'Save ' + pct + '%';
+          badgeEl.style.display = '';
+        }
+      } else {
+        compareEl.style.display = 'none';
+        if (badgeEl) badgeEl.style.display = 'none';
+      }
+    }
+
+    // Update ATC button
+    if (atcBtn && atcLabel) {
+      if (variant.available) {
+        atcBtn.disabled = false;
+        atcBtn.removeAttribute('aria-disabled');
+        atcLabel.textContent = 'Add to Cart';
+      } else {
+        atcBtn.disabled = true;
+        atcBtn.setAttribute('aria-disabled', 'true');
+        atcLabel.textContent = 'Sold Out';
+      }
+    }
+
+    // Update URL
+    var url = new URL(window.location.href);
+    url.searchParams.set('variant', variant.id);
+    history.replaceState({}, '', url.toString());
+
+    // Sync gallery via Horizon's variant:update event
+    syncGallery(variant);
+  }
+
+  function syncGallery(variant) {
+    var fetchUrl = productData.url + '?variant=' + variant.id + '&section_id=' + sectionId;
+    fetch(fetchUrl)
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        if (sectionEl) {
+          sectionEl.dispatchEvent(new CustomEvent('variant:update', {
+            bubbles: true,
+            detail: {
+              variant: variant,
+              sectionId: sectionId,
+              data: { html: doc }
+            }
+          }));
+        }
+      })
+      .catch(function () {});
+  }
+
+  // Variant card radio change
+  form.querySelectorAll('.graza-pdp__opt-radio').forEach(function (radio) {
+    radio.addEventListener('change', function () {
+      selectedOptions[radio.dataset.optIndex] = radio.value;
+
+      // Update card active states in this option group
+      var grid = radio.closest('.graza-pdp__opt-cards');
+      if (grid) {
+        grid.querySelectorAll('.graza-pdp__opt-card').forEach(function (card) {
+          card.classList.toggle('is-active', card.querySelector('input').checked);
+        });
+      }
+
+      updateUI(findVariant());
+    });
+  });
+
+  // Quantity controls
+  var qtyInput = document.getElementById('graza-qty-' + sectionId);
+  if (qtyInput) {
+    var decBtn = form.querySelector('[data-qty-dec]');
+    var incBtn = form.querySelector('[data-qty-inc]');
+    if (decBtn) decBtn.addEventListener('click', function () {
+      if (+qtyInput.value > 1) qtyInput.value = +qtyInput.value - 1;
+    });
+    if (incBtn) incBtn.addEventListener('click', function () {
+      qtyInput.value = +qtyInput.value + 1;
+    });
+  }
+
+  // Subscribe & Save toggle
+  var deliveryBtns = document.querySelectorAll('[data-delivery-tab]');
+  var sellingPlansEl = document.getElementById('graza-selling-plans-' + sectionId);
+  if (deliveryBtns.length && sellingPlansEl) {
+    deliveryBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        deliveryBtns.forEach(function (b) { b.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+        if (btn.dataset.deliveryTab === 'subscribe') {
+          sellingPlansEl.hidden = false;
+          var firstPlan = sellingPlansEl.querySelector('input[type="radio"]');
+          if (firstPlan && !sellingPlansEl.querySelector('input:checked')) {
+            firstPlan.checked = true;
+          }
+        } else {
+          sellingPlansEl.hidden = true;
+          sellingPlansEl.querySelectorAll('input').forEach(function (i) { i.checked = false; });
+        }
+      });
+    });
+  }
+})();
+</script>
+
+{% stylesheet %}
+/* ============================================================
+   GRAZA PDP SECTION
+   ============================================================ */
+
+.graza-pdp {
+  --graza-lime: #C4F441;
+  --graza-dark: #1B1B1B;
+  --graza-mid: #6B6B6B;
+  --graza-border: #E0E0E0;
+  --graza-bg: #FAFAF8;
+  --graza-card-bg: #FFFFFF;
+}
+
+.graza-pdp__inner {
+  display: grid;
+  grid-template-columns: 55fr 45fr;
+  gap: 48px;
+  align-items: start;
+  padding-block: 32px;
+}
+
+/* ---- Gallery Column ---- */
+.graza-pdp__gallery-col {
+  position: sticky;
+  top: calc(var(--header-group-height, 72px) + 16px);
+}
+
+/* ---- Buybox Column ---- */
+.graza-pdp__buybox {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ---- Title ---- */
+.graza-pdp__title {
+  margin: 0;
+  font-size: clamp(1.625rem, 3vw, 2.5rem);
+  line-height: 1.15;
+  color: var(--graza-dark);
+  font-family: var(--font-heading--family, Georgia, serif);
+  font-weight: var(--font-heading--weight, 700);
+  font-style: italic;
+}
+
+.graza-pdp__product-type {
+  margin: 4px 0 0;
+  font-size: 0.8125rem;
+  color: var(--graza-mid);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--font-body--family, sans-serif);
+}
+
+/* ---- Rating ---- */
+.graza-pdp__rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.graza-pdp__stars {
+  display: flex;
+  gap: 1px;
+  font-size: 1rem;
+  letter-spacing: 2px;
+}
+
+.graza-pdp__star { color: #D4D4D4; }
+.graza-pdp__star--filled { color: #F2A007; }
+
+.graza-pdp__rating-count {
+  font-size: 0.8125rem;
+  color: var(--graza-mid);
+  font-family: var(--font-body--family, sans-serif);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ---- Form ---- */
+.graza-pdp__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ---- Variant Option Cards ---- */
+.graza-pdp__variants {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.graza-pdp__opt-label {
+  margin: 0 0 8px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--graza-mid);
+  font-family: var(--font-body--family, sans-serif);
+}
+
+.graza-pdp__opt-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.graza-pdp__opt-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 8px 8px;
+  min-width: 82px;
+  max-width: 110px;
+  border: 2px solid var(--graza-border);
+  border-radius: 12px;
+  cursor: pointer;
+  background: var(--graza-card-bg);
+  text-align: center;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    border-color: #BDBDBD;
+  }
+
+  &.is-active {
+    border-color: var(--graza-lime);
+    box-shadow: 0 0 0 1px var(--graza-lime);
+    background: #FDFFEF;
+  }
+
+  &.is-sold-out {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.graza-pdp__opt-radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.graza-pdp__opt-card-img-wrap {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.graza-pdp__opt-card-img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.graza-pdp__opt-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.graza-pdp__opt-card-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--graza-dark);
+  font-family: var(--font-body--family, sans-serif);
+  line-height: 1.2;
+}
+
+.graza-pdp__opt-card-price {
+  font-size: 0.6875rem;
+  color: var(--graza-mid);
+  font-family: var(--font-body--family, sans-serif);
+}
+
+/* ---- Price ---- */
+.graza-pdp__price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.graza-pdp__price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--graza-dark);
+  font-family: var(--font-body--family, sans-serif);
+}
+
+.graza-pdp__price-compare {
+  font-size: 1rem;
+  color: var(--graza-mid);
+  text-decoration: line-through;
+}
+
+.graza-pdp__price-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  background: #2C7A2C;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-family: var(--font-body--family, sans-serif);
+}
+
+/* ---- Subscribe & Save ---- */
+.graza-pdp__delivery-toggle {
+  display: flex;
+  border: 2px solid var(--graza-border);
+  border-radius: 100px;
+  overflow: hidden;
+  padding: 3px;
+  gap: 2px;
+  background: var(--graza-bg);
+}
+
+.graza-pdp__delivery-btn {
+  flex: 1;
+  padding: 9px 16px;
+  border: none;
+  border-radius: 100px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--graza-mid);
+  transition: background 0.2s, color 0.2s;
+  font-family: var(--font-body--family, sans-serif);
+
+  &.is-active {
+    background: var(--graza-dark);
+    color: #FFFFFF;
+  }
+
+  &:hover:not(.is-active) {
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--graza-dark);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--graza-dark);
+    outline-offset: 2px;
+  }
+}
+
+.graza-pdp__selling-plans {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  background: var(--graza-bg);
+  border-radius: 10px;
+  border: 1px solid var(--graza-border);
+}
+
+.graza-pdp__plan-group-name {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--graza-mid);
+}
+
+.graza-pdp__plan-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: var(--graza-dark);
+  cursor: pointer;
+  font-family: var(--font-body--family, sans-serif);
+}
+
+/* ---- Quantity ---- */
+.graza-pdp__qty-section {
+  display: flex;
+  align-items: center;
+}
+
+.graza-pdp__qty-wrap {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--graza-border);
+  border-radius: 100px;
+  overflow: hidden;
+  height: 46px;
+  width: fit-content;
+}
+
+.graza-pdp__qty-btn {
+  width: 46px;
+  height: 46px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--graza-dark);
+  transition: background 0.15s;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--graza-dark);
+    outline-offset: -2px;
+  }
+}
+
+.graza-pdp__qty-input {
+  width: 52px;
+  height: 46px;
+  text-align: center;
+  border: none;
+  border-inline: 1.5px solid var(--graza-border);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  font-family: var(--font-body--family, sans-serif);
+  color: var(--graza-dark);
+  background: transparent;
+  outline: none;
+  -moz-appearance: textfield;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+}
+
+/* ---- Add to Cart ---- */
+.graza-pdp__atc-btn {
+  width: 100%;
+  min-height: 54px;
+  padding: 14px 28px;
+  background: var(--graza-lime);
+  color: var(--graza-dark);
+  border: none;
+  border-radius: 100px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.12s ease;
+  font-family: var(--font-body--family, sans-serif);
+  text-transform: uppercase;
+
+  &:hover:not(:disabled) {
+    opacity: 0.88;
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  &:disabled,
+  &[aria-disabled="true"] {
+    background: #DEDEDE;
+    color: #9E9E9E;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--graza-dark);
+    outline-offset: 3px;
+  }
+}
+
+/* ---- Trust Badges ---- */
+.graza-pdp__trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding-top: 4px;
+  border-top: 1px solid var(--graza-border);
+}
+
+.graza-pdp__trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--graza-mid);
+  font-family: var(--font-body--family, sans-serif);
+}
+
+.graza-pdp__trust-icon {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+/* ---- Mobile ---- */
+@media screen and (max-width: 749px) {
+  .graza-pdp__inner {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding-block: 0;
+  }
+
+  .graza-pdp__gallery-col {
+    position: static;
+  }
+
+  .graza-pdp__buybox {
+    padding: 20px 16px 32px;
+    gap: 16px;
+  }
+
+  .graza-pdp__title {
+    font-size: 1.5rem;
+  }
+
+  .graza-pdp__opt-cards {
+    gap: 8px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Graza PDP",
+  "tag": "section",
+  "class": "graza-pdp-section",
+  "blocks": [
+    { "type": "@theme" },
+    { "type": "@app" }
+  ],
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Rating"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show rating",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "rating_value",
+      "label": "Rating value",
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "default": 4.6
+    },
+    {
+      "type": "text",
+      "id": "rating_count",
+      "label": "Rating label",
+      "default": "4.6 Stars · 2,400+ Reviews"
+    },
+    {
+      "type": "header",
+      "content": "Subscribe & Save"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subscribe",
+      "label": "Show subscribe & save",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Trust Badges"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust",
+      "label": "Show trust badges",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "trust_badge_1",
+      "label": "Badge 1 text",
+      "default": "Free shipping $50+"
+    },
+    {
+      "type": "text",
+      "id": "trust_badge_2",
+      "label": "Badge 2 text",
+      "default": "100% Extra Virgin"
+    },
+    {
+      "type": "text",
+      "id": "trust_badge_3",
+      "label": "Badge 3 text",
+      "default": "Easy returns"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Graza PDP"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}
